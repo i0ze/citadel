@@ -1,0 +1,69 @@
+<Layouts.app flash={@flash}>
+  <div class="text-center">
+    <h1 class="text-4xl font-bold">Board {@board.name}</h1>
+    <%= if @role in [:owner, :editor] do %>
+      <button phx-click="add_sticker">Add Sticker</button>
+    <% end %>
+
+    <%= if @role == :owner do %>
+      <div id="invite_generate">
+        <button phx-click="generate_invite">Generate Invite</button>
+        <h3>Текущие ссылки:</h3>
+        <%= for {id, invite} <- @board.invites do %>
+          {invite.name}: {invite.expire_at} <br />
+        <% end %>
+      </div>
+    <% end %>
+
+    <div id="board" class="relative w-full h-screen border">
+      <%= for {sticker_id, sticker} <- @board.stickers do %>
+        <div
+          id={"sticker-#{sticker_id}"}
+          class="absolute p-4 bg-yellow-200 border border-yellow-400"
+          style={"left: #{sticker.x}px; top: #{sticker.y}px;"}
+        >
+          <%= if @role in [:owner, :editor] do %>
+            <div
+              id={"sticker-drag-#{sticker_id}"}
+              class="absolute bg-red-200"
+              style="right: 3px; top: -1px"
+              phx-hook="Draggable"
+            >
+              M
+            </div>
+          <% end %>
+          <%= if sticker_id == @editing_sticker_id do %>
+            <.form for={@form} phx-change="validate_sticker" phx-submit="save_sticker">
+              <.input field={@form[:text]} />
+              <button type="submit">Save</button>
+            </.form>
+          <% else %>
+            <div>
+              {sticker.text}
+            </div>
+            <%= if @role in [:owner, :editor] do %>
+              <button
+                phx-click="edit_sticker"
+                phx-value-id={sticker_id}
+                class="absolute bg-green-300"
+                style="left: 3px; bottom: -1px"
+              >
+                E
+              </button>
+            <% end %>
+          <% end %>
+          <%= if @role in [:owner, :editor] do %>
+            <button
+              phx-click="delete_sticker"
+              phx-value-id={sticker_id}
+              class="absolute text-red-500"
+              style="left: 3px; top: -1px"
+            >
+              X
+            </button>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</Layouts.app>

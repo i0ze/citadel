@@ -1,0 +1,13 @@
+<Layouts.app flash={@flash}>
+  <div class="text-center">
+    <%= for board <- @boards do %>
+      <div id={"board:#{board.id}"}>
+        <h2>{board.name}</h2>
+        <.link href={~p"/boards/#{board.id}"}>Connect</.link>
+      </div>
+      <div class="divider"></div>
+    <% end %>
+
+    <.link href={~p"/boards/new"}>Create new board</.link>
+  </div>
+</Layouts.app>

@@ -1,0 +1,9 @@
+<Layouts.app flash={@flash}>
+  <div class="text-center">
+    <h1>Create a board</h1>
+    <.form for={@form} phx-submit="create_board">
+      <.input field={@form[:name]} />
+      <button type="submit">Create</button>
+    </.form>
+  </div>
+</Layouts.app>
